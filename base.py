@@ -81,11 +81,14 @@ img_ref = []
 
 def renderPiece(x, y, shape):
     # global SCALING_FACTOR
-    # SCALING_FACTOR = sh03
+    # SCALING_FACTOR = 25
     incr = 0.5
     x, y = x + incr, y + incr
     shapeImage = shape.split('_')
-    img = ImageTk.PhotoImage(Image.open(f"ChessPieces{os.sep}{shapeImage[0]}.png"))
+    img = Image.open(f"ChessPieces{os.sep}{shapeImage[0]}.png")
+    resized_image= img.resize((SCALING_FACTOR,SCALING_FACTOR), Image.ANTIALIAS)
+    img = ImageTk.PhotoImage(resized_image)
+    
     widgetInfoDict["canvas"].create_image(x * SCALING_FACTOR, y * SCALING_FACTOR, image=img)
     img_ref.append(img)
 
@@ -94,8 +97,8 @@ def renderPiece(x, y, shape):
 #   @param boardSize : integer number.
 #
 def renderBoard(boardSize):
-    # global SCALING_FACTOR
-    # SCALING_FACTOR = boardSize/3
+    global SCALING_FACTOR
+    SCALING_FACTOR = 25
     renderRectangle([0, 0, boardSize, boardSize], "board")
     for n in range(boardSize):
         renderLine([n, 0, n, boardSize])
