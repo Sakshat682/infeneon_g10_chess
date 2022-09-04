@@ -70,10 +70,8 @@ def createEditor(fileContents):
 
 def key(event):
     placeSequenceProfiler()
-    print("pressed", repr(event.char))
+    # print("pressed", repr(event.char))
 
-def callback(sv):
-    print(sv.get())
 
 ## Function to read the data from sequence cmds (placeSequence.txt) file and write to the text editor
 #
