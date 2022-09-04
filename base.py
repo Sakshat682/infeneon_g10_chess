@@ -1,9 +1,11 @@
 #!/usr/bin/env python
+from distutils.cmd import Command
 import sys, os
 from tkinter import *
 from PIL import ImageTk, Image
 import cProfile
 import pstats
+from threading import Thread
 
 
 SCALING_FACTOR = 50
@@ -27,6 +29,7 @@ pieceInfoDict = {}
 #               }
 
 
+
 ## Function to create the toplevel window, text and canvas widget
 #
 def createEditor(fileContents):
@@ -39,12 +42,14 @@ def createEditor(fileContents):
     widgetInfoDict["pw"] = PanedWindow(widgetInfoDict["root"], orient='horizontal')
 
     widgetInfoDict["lf1"] = LabelFrame(widgetInfoDict["root"], text='Editor', width=500)
+    
     widgetInfoDict["lf1"].pack(expand='yes', fill=BOTH)
 
     widgetInfoDict["lf2"] = LabelFrame(widgetInfoDict["root"], text='Canvas', width=500)
     widgetInfoDict["lf2"].pack(expand='yes', fill=BOTH)
 
     widgetInfoDict["text"] = Text(widgetInfoDict["lf1"])
+    widgetInfoDict["text"].bind("<KeyRelease>", key)
     widgetInfoDict["text"].pack(fill=BOTH, expand=True)
 
     widgetInfoDict["canvas"] = Canvas(widgetInfoDict["lf2"])
@@ -56,15 +61,19 @@ def createEditor(fileContents):
     widgetInfoDict["pw"].add(widgetInfoDict["lf2"])
     widgetInfoDict["pw"].pack(fill=BOTH, expand=True)
     widgetInfoDict["pw"].configure(sashrelief=RAISED)
-
     renderBoard(BOARD_SIZE)
-    # print(fileContents)
-    # readPieceInfoFromFile(filePath)
     btn = Button(widgetInfoDict["lf1"], text='Evaluate', bd='5', command=placeSequenceProfiler)
     btn.pack(side='bottom')
     widgetInfoDict["text"].insert(END, fileContents)
+
     widgetInfoDict["root"].mainloop()
 
+def key(event):
+    placeSequenceProfiler()
+    print("pressed", repr(event.char))
+
+def callback(sv):
+    print(sv.get())
 
 ## Function to read the data from sequence cmds (placeSequence.txt) file and write to the text editor
 #
@@ -98,7 +107,7 @@ def renderPiece(x, y, shape):
 #
 def renderBoard(boardSize):
     global SCALING_FACTOR
-    SCALING_FACTOR = 25
+    SCALING_FACTOR =  25
     renderRectangle([0, 0, boardSize, boardSize], "board")
     for n in range(boardSize):
         renderLine([n, 0, n, boardSize])
@@ -115,7 +124,6 @@ def renderBoard(boardSize):
 # 5(l), 7(b) rectangle from origin, coordinates are (0,0) and (5,7)
 #
 def renderRectangle(coords, name=None):
-    # SCALING_FACTOR = 10
     coords = [coord * SCALING_FACTOR for coord in coords]
     coordref = widgetInfoDict["canvas"].create_rectangle(coords[0], coords[1], coords[2], coords[3])
     # ref 'coordref' can be used to print the coordinates of the rendered name, i.e.
@@ -147,7 +155,7 @@ def renderLine(coords, color="black", name=None):
 #
 
 def readPieceInfoFromFile(pieceInfoFile):
-    print("inside piece func")
+    # print("inside piece func")
     # pieceInfoDict={}
     with open(pieceInfoFile, 'r') as pieceFileObj:
         i=0
@@ -171,7 +179,7 @@ def readPieceInfoFromFile(pieceInfoFile):
             else:
                 pieceInfoDict[dataLst[0]] = [pieceInfoDict[dataLst[1]][0]+int(dataLst[2]) , pieceInfoDict[dataLst[1]][1]+int(dataLst[3])]
             i+=1
-        print(pieceInfoDict)
+        # print(pieceInfoDict)
 
 def profile(function,*arguments):
     pr = cProfile.Profile()
@@ -191,8 +199,8 @@ def placeSequenceProfiler():
                 # print('path: {}'.format(line))
     pieceInfoDict.clear()
     readPieceInfoFromFile('D:\\infeneonG10\\Participants_hackathon\\Hackathon_basecode\\input.txt')
-    placeSequence()
-    # profile(placeSequence).print_stats()
+    # placeSequence()
+    profile(placeSequence).print_stats()
     
 ## Function which will be executed after the 'Evaluate' button click
 #
@@ -216,10 +224,12 @@ if __name__ == "__main__":
             "Please pass the <Black Positions> file path, <White King Coordinates> and <Board Size> as arguments in "
             "the command line")
         sys.exit()
-
+    
     BOARD_SIZE = int(sys.argv[4])
+    mat = [[1]*BOARD_SIZE]*BOARD_SIZE
     WHITE_X, WHITE_Y = int(sys.argv[2]), int(sys.argv[3])
     data = readData(sys.argv[1])
     filePath = sys.argv[1]
+    # print(mat)
     readPieceInfoFromFile(filePath)
     createEditor(data)

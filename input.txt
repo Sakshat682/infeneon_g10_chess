@@ -8,4 +8,3 @@ Bishop_5   Knight_1  -13 -17
 Bishop_6   Knight_0  11 0 
 Bishop_7   Knight_1  -5 -3 
 Knight_8   Knight_4  -1 -3 
-Rook_9   Bishop_5  9 10 
