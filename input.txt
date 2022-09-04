@@ -1,0 +1,11 @@
+# object_name   ref_object  relative_x relative_y 
+Knight_0   Origin  5 17 
+Knight_1   Origin  15 18 
+Rook_2   Knight_0  10 -13 
+Knight_3   Origin  15 8 
+Knight_4   Knight_1  -4 -12 
+Bishop_5   Knight_1  -13 -17 
+Bishop_6   Knight_0  11 0 
+Bishop_7   Knight_1  -5 -3 
+Knight_8   Knight_4  -1 -3 
+Rook_9   Bishop_5  9 10 

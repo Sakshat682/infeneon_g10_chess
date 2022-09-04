@@ -29,7 +29,7 @@ pieceInfoDict = {}
 
 ## Function to create the toplevel window, text and canvas widget
 #
-def createEditor(fileContents, filePath):
+def createEditor(fileContents):
     # main tkinter window
     widgetInfoDict["root"] = Tk()
     widgetInfoDict["root"].geometry(str(widgetInfoDict["root"].winfo_screenwidth()) + 'x' + str(
@@ -80,7 +80,10 @@ img_ref = []
 
 
 def renderPiece(x, y, shape):
-    x, y = x + 0.5, y + 0.5
+    # global SCALING_FACTOR
+    # SCALING_FACTOR = sh03
+    incr = 0.5
+    x, y = x + incr, y + incr
     shapeImage = shape.split('_')
     img = ImageTk.PhotoImage(Image.open(f"ChessPieces{os.sep}{shapeImage[0]}.png"))
     widgetInfoDict["canvas"].create_image(x * SCALING_FACTOR, y * SCALING_FACTOR, image=img)
@@ -91,6 +94,8 @@ def renderPiece(x, y, shape):
 #   @param boardSize : integer number.
 #
 def renderBoard(boardSize):
+    # global SCALING_FACTOR
+    # SCALING_FACTOR = boardSize/3
     renderRectangle([0, 0, boardSize, boardSize], "board")
     for n in range(boardSize):
         renderLine([n, 0, n, boardSize])
@@ -107,6 +112,7 @@ def renderBoard(boardSize):
 # 5(l), 7(b) rectangle from origin, coordinates are (0,0) and (5,7)
 #
 def renderRectangle(coords, name=None):
+    # SCALING_FACTOR = 10
     coords = [coord * SCALING_FACTOR for coord in coords]
     coordref = widgetInfoDict["canvas"].create_rectangle(coords[0], coords[1], coords[2], coords[3])
     # ref 'coordref' can be used to print the coordinates of the rendered name, i.e.
@@ -139,16 +145,18 @@ def renderLine(coords, color="black", name=None):
 
 def readPieceInfoFromFile(pieceInfoFile):
     print("inside piece func")
+    # pieceInfoDict={}
     with open(pieceInfoFile, 'r') as pieceFileObj:
         i=0
-        print(pieceFileObj)
+        # print(pieceFileObj)
         # pieceFileList = pieceFileObj.readlines()
+        
         for line in pieceFileObj:
             if(i==0):
                 i+=1
                 continue
             dataLst = line.split()
-            print("Inside readPiece")
+            # print("Inside readPiece")
             # print(dataLst)
             if len(dataLst) != 4:
                 print("Couldn't process the line " + line + " in " + str(
@@ -170,7 +178,18 @@ def profile(function,*arguments):
     return pstats.Stats(pr).sort_stats('cumtime')
 
 def placeSequenceProfiler():
-    profile(placeSequence).print_stats()
+    with open('D:\\infeneonG10\\Participants_hackathon\\Hackathon_basecode\\input.txt', 'w') as f:
+        f.write("")
+    for line in widgetInfoDict["text"].get('1.0', 'end-1c').splitlines():
+        # Iterate lines
+        if line:
+            with open('D:\\infeneonG10\\Participants_hackathon\\Hackathon_basecode\\input.txt', 'a') as f:
+                f.write(line+"\n")
+                # print('path: {}'.format(line))
+    pieceInfoDict.clear()
+    readPieceInfoFromFile('D:\\infeneonG10\\Participants_hackathon\\Hackathon_basecode\\input.txt')
+    placeSequence()
+    # profile(placeSequence).print_stats()
     
 ## Function which will be executed after the 'Evaluate' button click
 #
@@ -200,4 +219,4 @@ if __name__ == "__main__":
     data = readData(sys.argv[1])
     filePath = sys.argv[1]
     readPieceInfoFromFile(filePath)
-    createEditor(data, filePath)
+    createEditor(data)
