@@ -72,7 +72,6 @@ def key(event):
     placeSequenceProfiler()
     # print("pressed", repr(event.char))
 
-
 ## Function to read the data from sequence cmds (placeSequence.txt) file and write to the text editor
 #
 #   @param placementSwqCmdsFile : Reference to the area.txt file path
@@ -87,15 +86,12 @@ img_ref = []
 
 
 def renderPiece(x, y, shape):
-    # global SCALING_FACTOR
-    # SCALING_FACTOR = 25
     incr = 0.5
     x, y = x + incr, y + incr
     shapeImage = shape.split('_')
     img = Image.open(f"ChessPieces{os.sep}{shapeImage[0]}.png")
     resized_image= img.resize((SCALING_FACTOR,SCALING_FACTOR), Image.ANTIALIAS)
     img = ImageTk.PhotoImage(resized_image)
-    
     widgetInfoDict["canvas"].create_image(x * SCALING_FACTOR, y * SCALING_FACTOR, image=img)
     img_ref.append(img)
 
@@ -153,13 +149,8 @@ def renderLine(coords, color="black", name=None):
 #
 
 def readPieceInfoFromFile(pieceInfoFile):
-    # print("inside piece func")
-    # pieceInfoDict={}
     with open(pieceInfoFile, 'r') as pieceFileObj:
         i=0
-        # print(pieceFileObj)
-        # pieceFileList = pieceFileObj.readlines()
-        
         for line in pieceFileObj:
             if(i==0):
                 i+=1
@@ -177,7 +168,6 @@ def readPieceInfoFromFile(pieceInfoFile):
             else:
                 pieceInfoDict[dataLst[0]] = [pieceInfoDict[dataLst[1]][0]+int(dataLst[2]) , pieceInfoDict[dataLst[1]][1]+int(dataLst[3])]
             i+=1
-        # print(pieceInfoDict)
 
 def profile(function,*arguments):
     pr = cProfile.Profile()
